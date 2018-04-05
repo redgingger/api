@@ -17,6 +17,7 @@ db.once("open", () => {
 });
 
 let Customer = require('./user');
+let Cart = require('./cart');
 let ProductCategory = require('./category');
 let Product = require('./product');
 let Order = require('./order');
@@ -28,4 +29,5 @@ module.exports = {
     Order,
     OrderStatusCodes,
     ProductCategory,
+    Cart
 };

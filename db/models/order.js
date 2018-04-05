@@ -11,10 +11,11 @@ let ShipmentSchema = new Schema({
 
 // Schema for Orders
 let OrderSchema = new Schema({
-  product: {type: String, ref: "Product"},
-  status: {type: String, ref: 'OrderStatusCode'},
+  product: {type: Schema.Types.ObjectId, ref: "Product"},
+  status: {type: Schema.Types.ObjectId, ref: 'OrderStatusCode'},
   quantity: Number,
-  shipment: [ShipmentSchema]
+  shipment: [ShipmentSchema],
+  customer: {type: Schema.Types.ObjectId, ref:'Customer'}
 });
 
 let Order = mongoose.model("Order", OrderSchema);

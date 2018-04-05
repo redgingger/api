@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
 let Schema = mongoose.Schema;
 
 let CartSchema = require('./cart');
@@ -40,10 +41,18 @@ let CustomerSchema = new Schema({
   address_line_2: {type: String, default: null},
   town_or_city: {type: String, default: null},
   country: {type: String, default: null},
-  cart: [CartSchema],
-  order_history: [{type: String, ref:'Order'}],
-  is_admin: {type: Boolean, default: false}
+  order_history: [{type: Schema.Types.ObjectId, ref:'Order'}],
+  is_admin: {type: Boolean, default: false},
+  wishlist: { type: [Schema.Types.ObjectId], ref: 'Products' }
 });
+
+// CustomerSchema.methods.encryptPassword = function(password) {
+//     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
+// };
+
+// CustomerSchema.methods.validPassword = function(password) {
+//     return bcrypt.compareSync(password, this.password);
+// };
 
 let Customer = mongoose.model("Customer", CustomerSchema);
 

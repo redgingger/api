@@ -18,7 +18,7 @@ let ReviewSchema = new Schema({
 
 let ProductSchema = new Schema({
   url: String,
-  product_type: {type: String, ref:'ProductCategory'},
+  product_type: {type: Schema.Types.ObjectId, ref:'ProductCategory'},
   name: {
       type: String,
       required: [true, 'Product name is required!']
@@ -41,11 +41,7 @@ let ProductSchema = new Schema({
   man_details: Array,
   created_at: {type: Date, default: Date.now},
   reviews: [ReviewSchema],
-  likes: [{
-      type: [Schema.Types.ObjectId],
-      ref: 'Customer',
-      required: true
-  }]
+  is_deleted: {type: Boolean, default: false}
 });
 
 let Product = mongoose.model("Product", ProductSchema);

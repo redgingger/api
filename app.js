@@ -11,6 +11,7 @@ var config = require('./config');
 // import subroutes
 let users = require('./routes/users');
 let index = require('./routes/index');
+let admin = require('./routes/admin');
 
 // initialize the app
 let app = express();
@@ -26,14 +27,17 @@ app.get('/', (req, res) => {
 });
 
 // routes available publicly
-app.use('/', index);
+app.use('/api', index);
 
 // routes for signed in user
-app.use('/user', users);
+app.use('/api/user', users);
+
+//routes for admin
+app.use('/api/admin', admin);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  let err = new Error('Not Found');
+  let err = new Error();
   err.status = 404;
   next(err);
 });

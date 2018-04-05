@@ -2,12 +2,16 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let CartSchema = new Schema({
-  product: {type: String, ref:'Product'},
+  product: {type: Schema.Types.ObjectId, ref:'Product'},
   quantity: {
       type: Number,
-      min: 1
+      min: 1,
+      default: 1
   },
-  updated_at: {type: Date, default: Date.now}
+  updated_at: {type: Date, default: Date.now},
+  user: {type: Schema.Types.ObjectId, ref: 'User'}
 });
 
-module.exports = CartSchema;
+let Cart = mongoose.model('Cart', CartSchema);
+
+module.exports = Cart;
