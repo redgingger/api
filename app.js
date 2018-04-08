@@ -42,16 +42,29 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = config.env === 'development' ? err : {};
 
-  // render the error page
+if (config.env === 'development') {
+
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.json({
+        message: err.message,
+        error: err
+    });
+    console.log(err);
+  });
+
+}
+
+app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.json({error: err});
+  res.json({
+      message: err.message,
+      error: {}
+  });
   console.log(err);
+
 });
+
 
 module.exports = app;

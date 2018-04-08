@@ -99,4 +99,22 @@ router.get('/products/:pId', (req, res, next) => {
 });
 
 
+/**
+ * Make a user admin
+ */
+router.post('/new_admin', (req, res, next) => {
+  Customer.findById(req.body.user)
+    .exec((err, user) => {
+      if (err) return next(err);
+      if (user) {
+        user.is_admin = true;
+        user.save();
+        res.status(200).json({message: "User transformed to an admin."});
+      } else {
+        res.status(404).json({message: "User not found."})
+      }
+    });
+});
+
+
 module.exports = router;

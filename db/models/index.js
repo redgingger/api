@@ -20,7 +20,7 @@ let Customer = require('./user');
 let Cart = require('./cart');
 let ProductCategory = require('./category');
 let Product = require('./product');
-let Order = require('./order');
+let {Order, Shipment} = require('./order');
 let OrderStatusCodes = require('./orderStatusCode');
 
 module.exports = {
@@ -29,5 +29,6 @@ module.exports = {
     Order,
     OrderStatusCodes,
     ProductCategory,
-    Cart
+    Cart,
+    Shipment
 };

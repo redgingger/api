@@ -4,6 +4,10 @@ var router = express.Router();
 var Customer = require('../db/models/index').Customer;
 var Product = require('../db/models/index').Product;
 var Cart = require('../db/models/index').Cart;
+var Orders = require('../db/models/index').Order;
+var Shipment = require('../db/models/index').Shipment;
+
+var CheckoutController = require('../controllers/CheckoutController');
 
 var tokenVerification = require('../lib/tokenVerification');
 
@@ -44,36 +48,38 @@ router.post('/cart', (req, res, next) => {
       if (err) next(err);
       if (product) {
         let query = Cart.findOne({ 'product': product._id, user: req.userId });
-          query.exec((err, cart) => {
-            if (err) next(err);
-            // product already in cart
-            if (cart) {
-              cart.quantity++;
-              cart.save((err, c) => {
-                if (err) return next(err);
-                c.product = product;
-                res.json(c);
-              });
-            }
-            // product not in cart
-            else {
-              let c = new Cart({
-                user: req.userId,
-                product: req.body.product
-              });
-              c.save((err, _cart) => {
-                if (err) return next(err);
-                res.status(201);
-                _cart.product = product;
-                res.json(_cart);
-              });
-            }
-          })
+        query.exec((err, cart) => {
+          if (err) next(err);
+          // product already in cart
+          if (cart) {
+            cart.quantity++;
+            cart.save((err, c) => {
+              if (err) return next(err);
+              c.product = product;
+              res.json(c);
+            });
+          }
+          // product not in cart
+          else {
+            let c = new Cart({
+              user: req.userId,
+              product: req.body.product
+            });
+            c.save((err, _cart) => {
+              if (err) return next(err);
+              res.status(201);
+              _cart.product = product;
+              res.json(_cart);
+            });
+          }
+        })
       } else {
         res.status(404);
-        res.json({error: {
-          message: 'Product not found'
-        }});
+        res.json({
+          error: {
+            message: 'Product not found'
+          }
+        });
       }
     });
 
@@ -83,11 +89,33 @@ router.post('/cart', (req, res, next) => {
  * get cart
  */
 router.get('/cart', (req, res, next) => {
-  Cart.find({user: req.userId})
+  Cart.find({ user: req.userId })
     .exec((err, cart) => {
       if (err) return next(err);
       res.json(cart);
     })
+});
+
+
+/**
+ * Checkout
+ */
+router.post('/checkout', (req, res, next) => {
+
+  let result = CheckoutController.checkoutOrders(req.body.orders, req.userId, req.coupon);
+
+  Cart.remove({user: req.userId}, (err) => {
+    if (!err) {
+      console.log('Cart removed!');
+    }
+  });
+
+  result.then(r => {
+    if (!r) {
+      res.json({ message: "Unable to process orders" })
+    } else res.json({ message: "Order Placed Succesfully"});
+  });
+
 });
 
 
